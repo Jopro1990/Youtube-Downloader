@@ -10,10 +10,8 @@ def download_youtube_video():
         # Prompt user for YouTube video URL
         video_url = input("Enter the YouTube video URL: ")
 
-        # Create a YouTube object
         yt = YouTube(video_url)
 
-        # Get streams with desired resolutions and file format
         resolutions = ['720p', '1080p', '1440p', '2160p']
         video_streams = yt.streams.filter(file_extension='webm', resolution=resolutions)
 
@@ -26,17 +24,14 @@ def download_youtube_video():
         choice = int(input("\nEnter the number corresponding to the desired resolution: ")) - 1
         selected_stream = video_streams[choice]
 
-        # Set output path to the current working directory
         output_path = os.getcwd()
 
         retry_count = 0
         while retry_count < max_retries:
             try:
-                # Print video details for the selected stream
                 print(f"\nSelected Resolution: {selected_stream.resolution}")
                 print(f"File size: {round(selected_stream.filesize / (1024 * 1024), 2)} MB")
 
-                # Download the video
                 selected_stream.download(output_path)
 
                 print(Fore.GREEN + "\nDownload completed successfully!" + Style.RESET_ALL)
@@ -55,7 +50,7 @@ def download_youtube_video():
 
         print(Fore.GREEN + "\nAudio download completed successfully!" + Style.RESET_ALL)
 
-        # Combine video and audio using FFmpeg
+        # Combine video and audio using ffmpeg
         video_path = os.path.join(output_path, f'{yt.title}.webm')
         audio_path = os.path.join(output_path, f'{yt.title}_audio.webm')
         output_path = os.path.join(output_path, f'{yt.title}.mp4')
@@ -64,7 +59,7 @@ def download_youtube_video():
             subprocess.run(['ffmpeg', '-i', video_path, '-i', audio_path, '-c', 'copy', output_path], check=True)
             print("Video and audio combined successfully.")
 
-            # Delete video and audio files
+            # Delete video and audio files that are left (already combined)
             os.remove(video_path)
             os.remove(audio_path)
 
